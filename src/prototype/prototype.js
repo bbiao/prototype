@@ -61,84 +61,6 @@ var Prototype = {
   **/
   Version: '<%= PROTOTYPE_VERSION %>',
 
-  /**
-   *  Prototype.Browser
-   *
-   *  A collection of [[Boolean]] values indicating the browser which is
-   *  currently in use. Available properties are `IE`, `Opera`, `WebKit`,
-   *  `MobileSafari` and `Gecko`.
-   *
-   *  Example
-   *
-   *      Prototype.Browser.WebKit;
-   *      //-> true, when executed in any WebKit-based browser.
-  **/
-  Browser: (function(){
-    var ua = navigator.userAgent;
-    // Opera (at least) 8.x+ has "Opera" as a [[Class]] of `window.opera`
-    // This is a safer inference than plain boolean type conversion of `window.opera`
-    var isOpera = Object.prototype.toString.call(window.opera) == '[object Opera]';
-    return {
-      IE:             !!window.attachEvent && !isOpera,
-      Opera:          isOpera,
-      WebKit:         ua.indexOf('AppleWebKit/') > -1,
-      Gecko:          ua.indexOf('Gecko') > -1 && ua.indexOf('KHTML') === -1,
-      MobileSafari:   /Apple.*Mobile/.test(ua)
-    }
-  })(),
-
-  /**
-   *  Prototype.BrowserFeatures
-   *
-   *  A collection of [[Boolean]] values indicating the presence of specific
-   *  browser features.
-  **/
-  BrowserFeatures: {
-    /**
-     *  Prototype.BrowserFeatures.XPath -> Boolean
-     *
-     *  Used internally to detect if the browser supports
-     *  [DOM Level 3 XPath](http://www.w3.org/TR/DOM-Level-3-XPath/xpath.html).
-    **/
-    XPath: !!document.evaluate,
-
-    /**
-     *  Prototype.BrowserFeatures.SelectorsAPI -> Boolean
-     *
-     *  Used internally to detect if the browser supports the
-     *  [NodeSelector API](http://www.w3.org/TR/selectors-api/#nodeselector).
-    **/
-    SelectorsAPI: !!document.querySelector,
-
-    /**
-     *  Prototype.BrowserFeatures.ElementExtensions -> Boolean
-     *
-     *  Used internally to detect if the browser supports extending html element
-     *  prototypes.
-    **/
-    ElementExtensions: (function() {
-      var constructor = window.Element || window.HTMLElement;
-      return !!(constructor && constructor.prototype);
-    })(),
-    SpecificElementExtensions: (function() {
-      // First, try the named class
-      if (typeof window.HTMLDivElement !== 'undefined')
-        return true;
-
-      var div = document.createElement('div'),
-          form = document.createElement('form'),
-          isSupported = false;
-
-      if (div['__proto__'] && (div['__proto__'] !== form['__proto__'])) {
-        isSupported = true;
-      }
-
-      div = form = null;
-
-      return isSupported;
-    })()
-  },
-
   ScriptFragment: '<script[^>]*>([\\S\\s]*?)<\/script\\s*>',
   JSONFilter: /^\/\*-secure-([\s\S]*)\*\/\s*$/,
 
@@ -178,6 +100,3 @@ var Prototype = {
   **/
   K: function(x) { return x }
 };
-
-if (Prototype.Browser.MobileSafari)
-  Prototype.BrowserFeatures.SpecificElementExtensions = false;
